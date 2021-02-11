@@ -1,14 +1,17 @@
-version: '3'
+version: '3.5'
 
 networks:
   laravel:
+
 
 services:
   app:
     build:
       context: .
       dockerfile: nginx.dockerfile
-    container_name: nginx
+    container_name: ${PROJECT_NAME}-nginx
+    environment:
+      PROJECT_NAME: ${PROJECT_NAME}
     ports:
       - 80:80
     volumes:
@@ -20,6 +23,22 @@ services:
       # - mailhog
     networks:
       - laravel
+
+  # postgres:
+  #   image: postgres:9.5-alpine
+  #   container_name: ${PROJECT_NAME}-postgres
+  #   restart: unless-stopped    
+  #   environment:
+  #     - POSTGRES_USER=${POSTGRES_USER}
+  #     - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+  #     - POSTGRES_DB=${POSTGRES_DB}
+  #   # In case you need to persist the data
+  #   # volumes:
+  #   #   - ./postgresql:/var/lib/postgresql/data
+  #   ports:
+  #     - "5432:5432"
+  #   networks:
+  #     - laravel
 
   # mysql:
   #   image: mysql:5.7.29
@@ -35,6 +54,9 @@ services:
   #     MYSQL_ROOT_PASSWORD: secret
   #     SERVICE_TAGS: dev
   #     SERVICE_NAME: mysql
+      # In case you need to persist the data
+  #   volumes:
+  #     - ./mysql:/var/lib/mysql
   #   networks:
   #     - laravel
 
@@ -42,7 +64,7 @@ services:
     build:
       context: .
       dockerfile: php.dockerfile
-    container_name: php
+    container_name: ${PROJECT_NAME}-php
     volumes:
       - ./src:/var/www/html:delegated
     networks:
@@ -61,7 +83,7 @@ services:
     build:
       context: .
       dockerfile: composer.dockerfile
-    container_name: composer
+    container_name: ${PROJECT_NAME}-composer
     volumes:
       - ./src:/var/www/html
     working_dir: /var/www/html
@@ -74,7 +96,7 @@ services:
 
   npm:
     image: node:13.7
-    container_name: npm
+    container_name: ${PROJECT_NAME}-npm
     volumes:
       - ./src:/var/www/html
     working_dir: /var/www/html
@@ -86,22 +108,14 @@ services:
     build:
       context: .
       dockerfile: php.dockerfile
-    container_name: artisan
+    container_name: ${PROJECT_NAME}-artisan
     volumes:
       - ./src:/var/www/html:delegated
     # depends_on:
     #   - mysql
+    #   - postgres
     working_dir: /var/www/html
     user: laravel
     entrypoint: ['php', '/var/www/html/artisan']
     networks:
       - laravel
-
-  # mailhog:
-  #   image: mailhog/mailhog:latest
-  #   container_name: mailhog
-  #   ports:
-  #     - 1025:1025
-  #     - 8025:8025
-  #   networks:
-  #     - laravel

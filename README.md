@@ -6,17 +6,22 @@ A pretty simplified Docker Compose workflow that sets up a LEMP network of conta
 
 To get started, make sure you have [Docker installed](https://docs.docker.com/docker-for-mac/install/) on your system, and then clone this repository.
 
+Clone the skeleton-laravel `git clone https://github.com/edsolis/laravel-skeleton.git <project_name>`.
+
+Run the post-clone script `bash bin/post-clone.sh`.
+
+Then create the new project `docker-compose run --rm composer create-project --prefer-dist laravel/laravel:^8.0 .`.
+
 Next, navigate in your terminal to the directory you cloned this, and spin up the containers for the web server by running `docker-compose up -d --build app`.
 
-After that completes, follow the steps from the [src/README.md](src/README.md) file to get your Laravel project added in (or create a new blank one).
+Open a browser and visit [localhost](http://localhost); validate that the app is up and running.
 
-Bringing up the Docker Compose network with `site` instead of just using `up`, ensures that only our site's containers are brought up at the start, instead of all of the command containers as well. The following are built for our web server, with their exposed ports detailed:
+Bringing up the Docker Compose network with `app` instead of just using `up`, ensures that only our app's containers are brought up at the start, instead of all of the command containers as well. The following are built for our web server, with their exposed ports detailed:
 
 - **nginx** - `:80`
 - **mysql** - `:3306`
 - **php** - `:9000`
 - **redis** - `:6379`
-- **mailhog** - `:8025` 
 
 Three additional containers are included that handle Composer, NPM, and Artisan commands *without* having to have these platforms installed on your local computer. Use the following command examples from your project root, modifying them to fit your particular use case.
 
@@ -35,9 +40,3 @@ By default, whenever you bring down the Docker network, your MySQL data will be 
 volumes:
   - ./mysql:/var/lib/mysql
 ```
-
-## MailHog
-
-The current version of Laravel (8 as of today) uses MailHog as the default application for testing email sending and general SMTP work during local development. Using the provided Docker Hub image, getting an instance set up and ready is simple and straight-forward. The service is included in the `docker-compose.yml` file, and spins up alongside the webserver and database services.
-
-To see the dashboard and view any emails coming through the system, visit [localhost:8025](http://localhost:8025) after running `docker-compose up -d site`.
