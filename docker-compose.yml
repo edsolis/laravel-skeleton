@@ -15,7 +15,7 @@ services:
       - USER_ID=${USER_ID}
       - GROUP_ID=${GROUP_ID}
     ports:
-      - 80:80
+      - 8000:80
     volumes:
       - ./src:/var/www/html:delegated
     depends_on:
