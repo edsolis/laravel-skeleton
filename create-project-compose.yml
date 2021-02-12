@@ -12,7 +12,6 @@ services:
       - GROUP_ID=${GROUP_ID}
     volumes:
       - ./src:/app:delegated
-    working_dir: /app
     user: laravel
     command: "create-project --prefer-dist laravel/laravel:${GOLABS_LARAVEL_VERSION} ."
     entrypoint: ['composer', '--ignore-platform-reqs']
