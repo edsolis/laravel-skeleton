@@ -1,0 +1,18 @@
+version: '3.5'
+  #  This only hepl us to create the project, once it's created it can be deleted
+
+services:
+  composer:
+    build:
+      context: .
+      dockerfile: composer.dockerfile
+    container_name: ${PROJECT_NAME}-composer-project
+    environment:
+      - USER_ID=${USER_ID}
+      - GROUP_ID=${GROUP_ID}
+    volumes:
+      - ./src:/app:delegated
+    working_dir: /app
+    user: laravel
+    command: "create-project --prefer-dist laravel/laravel:${GOLABS_LARAVEL_VERSION} ."
+    entrypoint: ['composer', '--ignore-platform-reqs']

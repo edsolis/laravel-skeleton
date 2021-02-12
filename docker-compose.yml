@@ -5,22 +5,23 @@ networks:
 
 
 services:
-  app:
+  web:
     build:
       context: .
       dockerfile: nginx.dockerfile
     container_name: ${PROJECT_NAME}-nginx
     environment:
-      PROJECT_NAME: ${PROJECT_NAME}
+      - APP_HOST=${PROJECT_NAME}-app
+      - USER_ID=${USER_ID}
+      - GROUP_ID=${GROUP_ID}
     ports:
       - 80:80
     volumes:
       - ./src:/var/www/html:delegated
     depends_on:
-      - php
+      - app
       # - redis
       # - mysql
-      # - mailhog
     networks:
       - laravel
 
@@ -60,11 +61,14 @@ services:
   #   networks:
   #     - laravel
 
-  php:
+  app:
     build:
       context: .
       dockerfile: php.dockerfile
-    container_name: ${PROJECT_NAME}-php
+    container_name: ${PROJECT_NAME}-app
+    environment:
+      - USER_ID=${USER_ID}
+      - GROUP_ID=${GROUP_ID}
     volumes:
       - ./src:/var/www/html:delegated
     networks:
@@ -84,31 +88,37 @@ services:
       context: .
       dockerfile: composer.dockerfile
     container_name: ${PROJECT_NAME}-composer
+    environment:
+      - USER_ID=${USER_ID}
+      - GROUP_ID=${GROUP_ID}
     volumes:
       - ./src:/var/www/html
     working_dir: /var/www/html
     depends_on:
-      - php
+      - app
     user: laravel
     entrypoint: ['composer', '--ignore-platform-reqs']
     networks:
       - laravel
 
-  npm:
-    image: node:13.7
-    container_name: ${PROJECT_NAME}-npm
-    volumes:
-      - ./src:/var/www/html
-    working_dir: /var/www/html
-    entrypoint: ['npm']
-    networks:
-      - laravel
+  # npm:
+  #   image: node:13.7
+  #   container_name: ${PROJECT_NAME}-npm
+  #   volumes:
+  #     - ./src:/var/www/html
+  #   working_dir: /var/www/html
+  #   entrypoint: ['npm']
+  #   networks:
+  #     - laravel
 
   artisan:
     build:
       context: .
       dockerfile: php.dockerfile
     container_name: ${PROJECT_NAME}-artisan
+    environment:
+      - USER_ID=${USER_ID}
+      - GROUP_ID=${GROUP_ID}
     volumes:
       - ./src:/var/www/html:delegated
     # depends_on:

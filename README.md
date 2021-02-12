@@ -10,7 +10,7 @@ Clone the skeleton-laravel `git clone https://github.com/edsolis/laravel-skeleto
 
 Run the post-clone script `bash bin/post-clone.sh`.
 
-Then create the new project `docker-compose run --rm composer create-project --prefer-dist laravel/laravel:^8.0 .`.
+Then create the new project `docker-compose run --rm composer-project create-project --prefer-dist laravel/laravel:^8.0 .`.
 
 Next, navigate in your terminal to the directory you cloned this, and spin up the containers for the web server by running `docker-compose up -d --build app`.
 

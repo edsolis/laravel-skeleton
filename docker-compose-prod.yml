@@ -1,0 +1,27 @@
+version: '3.5'
+
+networks:
+  laravel:
+
+services:
+  web:
+    build:
+      context: .
+      dockerfile: nginx.prod.dockerfile
+    container_name: ${PROJECT_NAME}-nginx
+    environment:
+      - APP_HOST=${PROJECT_NAME}-app
+    ports:
+      - 9000:80
+    depends_on:
+      - app
+    networks:
+      - laravel
+
+  app:
+    build:
+      context: .
+      dockerfile: php.prod.dockerfile
+    container_name: ${PROJECT_NAME}-app
+    networks:
+      - laravel
